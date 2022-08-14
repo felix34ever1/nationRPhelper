@@ -31,7 +31,6 @@ class Economy():
         self.tracker_economy_strength = 1
         self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_total_incoming_trade) * self.tracker_economy_strength * self.tracker_population
 
-
     def add_raw_industrial_metals(self,amount):
         self.raw_industrial_metals += amount
 
@@ -75,6 +74,7 @@ class Economy():
         self.tracker_incoming_trade += amount
 
     def tick(self):
+        # Called at beginning of every cycle, should be calculated before nation and assets
 
         self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_total_incoming_trade) * self.tracker_economy_strength * self.tracker_population
         
