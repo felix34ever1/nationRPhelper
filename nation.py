@@ -14,10 +14,18 @@ class Nation():
         self.stat_political = stat_political
         self.object_economy = object_economy
         self.list_assets = []
-        self.list_regions = []
 
     def menu(self):
         
+        for asset in self.list_assets:
+            print(asset.get_name(), asset.get_description())
+
+    def accessAsset(self):
+
+        pass
+
+    def acquireAsset(self, asset, list_asset):
+
         pass
 
     def tick(self):
