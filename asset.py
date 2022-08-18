@@ -9,4 +9,6 @@ class Asset():
 
     def __init__(self,name: str,stattype: str,description: str):
         
-            pass
+            self.name = name
+            self.stattype = stattype
+            self.description = description

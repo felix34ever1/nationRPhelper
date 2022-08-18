@@ -1,4 +1,4 @@
-"""Nation Class
+""" Nation Class
 
 Used to store data about a nation including all assets it has and its stats 
 """
@@ -63,7 +63,7 @@ class Nation():
             self.list_assets[choice].menu
 
 
-    def acquire_asset(self, asset, list_asset):
+    def acquire_asset(self) -> object:
 
         pass
 
