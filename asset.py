@@ -12,3 +12,12 @@ class Asset():
             self.name = name
             self.stattype = stattype
             self.description = description
+            
+    def get_name(self) -> str:
+        return(self.name)
+
+    def get_stattype(self) -> str:
+        return(self.stattype)
+
+    def get_description(self) -> str:
+        return(self.description)

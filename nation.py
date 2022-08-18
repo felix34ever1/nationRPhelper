@@ -6,14 +6,18 @@ Used to store data about a nation including all assets it has and its stats
 
 class Nation():
 
-    def __init__(self, name: str, stat_wealth: int, stat_force: int, stat_political: int, object_economy: object):
+    def __init__(self, name: str, stat_wealth: int, stat_force: int, stat_political: int, object_economy: object, object_store: object):
 
         self.name = name
         self.stat_wealth = stat_wealth
         self.stat_force = stat_force
         self.stat_political = stat_political
         self.object_economy = object_economy
+        self.object_store = object_store
         self.list_assets = []
+
+    def get_name(self) -> str:
+        return(self.name)
 
     def menu(self):
 
@@ -37,7 +41,7 @@ class Nation():
             elif choice == 3:
                 self.access_economy()
             elif choice == 4:
-                print("Exiting menu")
+                print(f"Exiting {self.name}'s menu")
             else:
                 print("Out of index, exiting menu")
 
@@ -58,18 +62,21 @@ class Nation():
         elif choice < 0:
             print("\nOut of index error: Exiting menu")            
         elif choice == exit_number:
-            print(f"\nExiting {self.name}'s menu")
+            print("\nExiting asset menu")
         else:
             self.list_assets[choice].menu
+        self.menu()
 
 
     def acquire_asset(self) -> object:
 
-        pass
+        self.list_assets.append(self.object_store.menu(self))
+        self.menu()
 
     def access_economy(self):
 
         self.object_economy.menu()
+        self.menu()
 
     def tick(self):
 
