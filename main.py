@@ -15,5 +15,45 @@ the_store = AssetStore(list_nation)
 France = Nation("French Republic", 4, 3, 5, Economy(67390000000,54000000),the_store)
 list_nation.append(France)
 
-France.menu()
+def menu():
+    isRunning = True
 
+    while isRunning:
+        print('''
+[0] - Access nation menu 
+[1] - Tick
+[2] - Save
+        ''')
+        choice = int(input("Select option: "))
+        
+        match choice:
+            
+            case 0:
+            
+                for nation in list_nation:
+                    print(f"[{list_nation.index(nation)}] - {nation.get_name()}")
+                
+                choice = int(input(f"Select index of country menu to access or {len(list_nation)}: "))
+                if choice > len(list_nation) or choice < 0:
+                    print("Out of index error, returning..")
+                elif choice == len(list_nation):
+                    print("Returning...")
+                else:
+                    list_nation[choice].menu()
+
+
+                
+            case 1:
+            
+                pass
+            
+            case 2:
+            
+                pass
+            
+            case _:
+            
+                print("Out of index error")
+
+        
+menu()
