@@ -8,6 +8,7 @@ class Nation():
 
     def __init__(self, name: str, stat_wealth: int, stat_force: int, stat_political: int, object_economy: object, object_store: object):
 
+        self.turns = 0
         self.name = name
         self.stat_wealth = stat_wealth
         self.stat_force = stat_force
@@ -78,6 +79,16 @@ class Nation():
         self.object_economy.menu()
         self.menu()
 
-    def tick(self):
+    def tick(self, phase: int=1):
+        # The tick is called upon a nation twice, once to process phase one and then again for phase 2.
+        #  Phase 1: Processes economy update
+        #  Phase 2: Processes assets + nation assets
 
-        pass
+        if phase == 1:
+            self.object_economy.tick()
+
+
+        elif phase == 2:
+            for asset in self.list_assets:
+                asset.tick()
+            self.turns += 1

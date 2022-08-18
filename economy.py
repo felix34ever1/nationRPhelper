@@ -31,6 +31,12 @@ class Economy():
         self.tracker_economy_strength = 1
         self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * self.tracker_economy_strength * self.tracker_population
 
+    def set_tracker_population(self, amount: int):
+        self.tracker_population = amount
+        
+    def set_tracker_urban_population(self, amount: int):
+        self.tracker_urban_population = amount
+    
     def add_raw_industrial_metals(self,amount: int):
         self.raw_industrial_metals += amount
 
@@ -45,6 +51,9 @@ class Economy():
 
     def add_raw_food(self,amount: int):
         self.raw_food += amount
+    
+    def add_raw_production(self,amount: int):
+        self.raw_production += amount
 
     def add_intermediary_plastics(self,amount: int):
         self.intermediary_plastics += amount
@@ -72,6 +81,110 @@ class Economy():
 
     def add_tracker_incoming_trade(self,amount: int):
         self.tracker_incoming_trade += amount
+
+    def menu(self):
+        print('''
+[1] - View statistics
+[2] - Manage resources manually
+[3] - Manage population manually
+[4] - Exit
+''')
+        choice = int(input("Select item on menu: "))
+        match choice:
+            case 1:
+                print(f"""
+    [RAW RESOURCES]
+Industrial Metals: {self.raw_industrial_metals}
+Rare Metals: {self.raw_rare_metals}
+Oil: {self.raw_oil}
+Natural Gas: {self.raw_natural_gas}
+Food: {self.raw_food}
+Production: {self.raw_production}
+
+    [INTERMEDIARY RESOURCES]
+Plastics: {self.intermediary_plastics}
+Electronics: {self.intermediary_electronics}
+Advanced Parts: {self.intermediary_advanced_parts}
+
+    [FINISHED PRODUCTS]
+Consumer Products: {self.finished_consumer_products}
+Military Products: {self.finished_military_products}
+Power: {self.finished_power} 
+""")
+            case 2:
+                print(f"""
+[1] Industrial Metals
+[2] Rare Metals
+[3] Oil
+[4] Natural Gas
+[5] Food
+[6] Production
+[7] Plastics
+[8] Electronics
+[9] Advanced Parts
+[10] Consumer Products
+[11] Military Products
+[12] Power
+                """)
+                choice = int(input("Select resource to add to using index: "))
+                if choice < 1 or choice > 12:
+                    print("Choice unselected, returning...")
+                else:
+                    amount = int(input("Select amount to add: "))
+                    if choice == 1:
+                        self.add_raw_industrial_metals(amount)
+                        print(f"New amount: {self.raw_industrial_metals}")
+                    elif choice == 2:
+                        self.add_raw_rare_metals(amount)
+                        print(f"New amount: {self.raw_rare_metals}")
+                    elif choice == 3:
+                        self.add_raw_oil(amount)
+                        print(f"New amount: {self.raw_oil}")
+                    elif choice == 4:
+                        self.add_raw_natural_gas(amount)
+                        print(f"New amount: {self.raw_natural_gas}")
+                    elif choice == 5:
+                        self.add_raw_food(amount)
+                        print(f"New amount: {self.raw_food}")
+                    elif choice == 6:
+                        self.add_raw_natural_gas(amount)
+                        print(f"New amount: {self.raw_natural_gas}")
+
+                    elif choice == 7:
+                        self.add_intermediary_plastics(amount)
+                        print(f"New amount: {self.intermediary_plastics}")
+                    elif choice == 8:
+                        self.add_intermediary_electronics(amount)
+                        print(f"New amount: {self.intermediary_electronics}")
+                    elif choice == 9:
+                        self.add_intermediary_advanced_parts(amount)
+                        print(f"New amount: {self.add_intermediary_advanced_parts}")
+                    elif choice == 10:
+                        self.add_finished_consumer_products(amount)
+                        print(f"New amount: {self.finished_consumer_products}")
+                    elif choice == 11:
+                        self.finished_military_products(amount)
+                        print(f"New amount: {self.finished_military_products}")
+                    elif choice == 12:
+                        self.add_finished_power(amount)
+                        print(f"New amount: {self.finished_power}")                             
+            case 3:
+                print(f"""
+[1]||Population:         [{self.tracker_population}]
+[2]||Urban Population:   [{self.tracker_urban_population}]
+                """)
+                choice = int(input("Select number to change: "))
+                if choice < 1 or choice > 2:
+                    print("Out of index error, returning...")
+                else:
+                    amount = int(input("Input amount to change to: "))
+                    if choice == 1:
+                        self.set_tracker_population(amount)
+                        
+                    elif choice == 2:
+                        self.set_tracker_urban_population(amount)
+            case 4:
+                print("Returning to nation menu...")           
 
     def tick(self):
         # Called at beginning of every cycle, should be calculated before nation and assets

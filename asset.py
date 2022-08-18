@@ -21,3 +21,6 @@ class Asset():
 
     def get_description(self) -> str:
         return(self.description)
+
+    def tick(self):
+        pass

@@ -40,12 +40,14 @@ def menu():
                     print("Returning...")
                 else:
                     list_nation[choice].menu()
-
-
-                
+ 
             case 1:
             
-                pass
+                for nation in list_nation:
+                    nation.tick(1)
+                
+                for nation in list_nation:
+                    nation.tick(2)
             
             case 2:
             
