@@ -71,13 +71,55 @@ class Nation():
 
     def acquire_asset(self) -> object:
 
-        self.list_assets.append(self.object_store.menu(self))
+        acquired_asset = (self.object_store.menu(self))
+        if acquired_asset != None:
+            self.list_assets.append(acquired_asset)
         self.menu()
 
     def access_economy(self):
 
         self.object_economy.menu()
         self.menu()
+
+    def save(self):
+        # Save economy details
+        self.object_economy.save(self)
+        
+        # Save asset details
+        asset_file = open(f"saves/nations/{self.get_name()}", "w")
+        for asset in self.list_assets:
+            if asset.get_assettype() == "ability":
+                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_duration()}\n")
+            else:
+                asset_file.write(f"{asset.name},{asset.assettype}\n")
+        asset_file.close()
+
+        # Save Nation details
+        file = open("saves/nationlist.txt","r")
+        line_number = 0
+        line_array = []
+        final_line_number = -1
+        for line in file:
+            # Scan the entire file for if entity already exists
+            line_array.append(line)
+            if line.rfind(str(self.get_name())) != -1:
+                final_line_number = line_number
+            line_number +=1
+            file.close
+        if final_line_number == -1:
+            # If the entity doesn't already exist, just append at end of file
+            file = open("saves/nationlist.txt","a")
+            file.write(f"{self.get_name()},{self.stat_wealth},{self.stat_political},{self.stat_force},{self.turns}\n")
+        else:
+            # If entity already exists, rewrite entire file and make the specifc line it was on changed again
+            file = open("saves/nationlist.txt","w")
+            for line in line_array:
+                if line_array.index(line) != final_line_number:
+                    file.write(line)
+                else:
+                    file.write(f"{self.get_name()},{self.stat_wealth},{self.stat_political},{self.stat_force},{self.turns}\n")
+        file.close()
+
 
     def tick(self, phase: int=1):
         # The tick is called upon a nation twice, once to process phase one and then again for phase 2.

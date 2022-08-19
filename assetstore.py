@@ -35,6 +35,8 @@ class AssetStore():
             # Adds to a list with  class, asset type and an example object of the class
             exec(code)
 
+        asset_file.close()
+        
     def menu(self, accessing_nation: object) -> object:
         # To be called by nation needing to get asset
 
@@ -70,6 +72,7 @@ class AssetStore():
 
             else:
                 return self.asset_list[choice][0]()
+        
 
     def nation_picker(self) -> object:
         for nation in self.list_nation:

@@ -186,10 +186,40 @@ Power: {self.finished_power}
             case 4:
                 print("Returning to nation menu...")           
 
+    def save(self, parent_nation: object):
+        # Must first scan file and see if a save of the economy already exists,
+        # if it does it must replace the file again with the correct line rewritten.
+        
+        file = open("saves/economylist.txt","r")
+        line_number = 0
+        line_array = []
+        final_line_number = -1
+        for line in file:
+            # Scan the entire file for if entity already exists
+            line_array.append(line)
+            if line.rfind(str(parent_nation.get_name())) != -1:
+                final_line_number = line_number
+            line_number +=1
+            file.close
+        if final_line_number == -1:
+            # If the entity doesn't already exist, just append at end of file
+            file = open("saves/economylist.txt","a")
+            file.write(f"{parent_nation.get_name()},{self.raw_industrial_metals},{self.raw_rare_metals},{self.raw_oil},{self.raw_natural_gas},{self.raw_food},{self.raw_production},{self.intermediary_plastics},{self.intermediary_electronics},{self.intermediary_advanced_parts},{self.finished_consumer_products},{self.finished_military_products},{self.finished_power},{self.tracker_incoming_trade},{self.tracker_total_resource_expenditure},{self.tracker_total_resource_production},{self.tracker_economy_strength},{self.tracker_budget},{self.tracker_population},{self.tracker_urban_population}\n")
+        else:
+            # If entity already exists, rewrite entire file and make the specifc line it was on changed again
+            file = open("saves/economylist.txt","w")
+            for line in line_array:
+                if line_array.index(line) != final_line_number:
+                    file.write(line)
+                else:
+                    file.write(f"{parent_nation.get_name()},{self.raw_industrial_metals},{self.raw_rare_metals},{self.raw_oil},{self.raw_natural_gas},{self.raw_food},{self.raw_production},{self.intermediary_plastics},{self.intermediary_electronics},{self.intermediary_advanced_parts},{self.finished_consumer_products},{self.finished_military_products},{self.finished_power},{self.tracker_incoming_trade},{self.tracker_total_resource_expenditure},{self.tracker_total_resource_production},{self.tracker_economy_strength},{self.tracker_budget},{self.tracker_population},{self.tracker_urban_population}\n")
+            file.close()
+
+
     def tick(self):
         # Called at beginning of every cycle, should be calculated before nation and assets
 
-        self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_total_incoming_trade) * self.tracker_economy_strength * self.tracker_population
+        self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * self.tracker_economy_strength * self.tracker_population
         
         # Reduce all resources to 0 to recalculate for next tick
 

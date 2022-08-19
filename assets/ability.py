@@ -10,7 +10,10 @@ class Ability(Asset):
     def __init__(self,name: str,stattype: str,description: str, duration: int, location: object):
         self.duration = duration
         self.location = location # The nation object this will effect in
-        super().__init__(name, stattype, description)        
+        super().__init__(name, "ability", stattype, description)
+
+    def get_duration(self) -> int:
+        return(self.duration)
 
     def tick(self):
         self.duration -= 1
