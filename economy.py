@@ -28,8 +28,9 @@ class Economy():
         self.tracker_incoming_trade = 0      #To keep track of incoming resource value
         self.tracker_total_resource_production = 0
         self.tracker_total_resource_expenditure = 0     #Includes resources traded out of country
-        self.tracker_economy_strength = 1
-        self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * self.tracker_economy_strength * self.tracker_population
+        self.tracker_economy_strength = 50
+        self.tracker_political_stability = 50
+        self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * (self.tracker_economy_strength*100000) + (self.tracker_population-self.tracker_urban_population+(self.tracker_urban_population*3)) * (self.tracker_political_stability/50)
 
     def set_tracker_population(self, amount: int):
         self.tracker_population = amount
@@ -82,8 +83,17 @@ class Economy():
     def add_tracker_incoming_trade(self,amount: int):
         self.tracker_incoming_trade += amount
 
+    def add_tracker_economy_strength(self, amount: float):
+        self.tracker_economy_strength += amount
+
+    def add_tracker_political_stability(self, amount: float):
+        self.tracker_political_stability += amount
+
     def set_tracker_economy_strength(self, amount: float):
         self.tracker_economy_strength = amount
+
+    def set_tracker_political_stability(self, amount: float):
+        self.tracker_political_stability = amount
 
     def set_tracker_budget(self, amount: float):
         self.tracker_budget = amount
@@ -116,6 +126,11 @@ Advanced Parts: {self.intermediary_advanced_parts}
 Consumer Products: {self.finished_consumer_products}
 Military Products: {self.finished_military_products}
 Power: {self.finished_power} 
+
+    [NATION STATS]
+Economic Strength: {self.tracker_economy_strength}
+Political Stability: {self.tracker_political_stability}
+Budget: {self.tracker_budget}
 """)
             case 2:
                 print(f"""
@@ -210,7 +225,7 @@ Power: {self.finished_power}
         if final_line_number == -1:
             # If the entity doesn't already exist, just append at end of file
             file = open("saves/economylist.txt","a")
-            file.write(f"{parent_nation.get_name()},{self.raw_industrial_metals},{self.raw_rare_metals},{self.raw_oil},{self.raw_natural_gas},{self.raw_food},{self.raw_production},{self.intermediary_plastics},{self.intermediary_electronics},{self.intermediary_advanced_parts},{self.finished_consumer_products},{self.finished_military_products},{self.finished_power},{self.tracker_incoming_trade},{self.tracker_total_resource_expenditure},{self.tracker_total_resource_production},{self.tracker_economy_strength},{self.tracker_budget},{self.tracker_population},{self.tracker_urban_population}\n")
+            file.write(f"{parent_nation.get_name()},{self.raw_industrial_metals},{self.raw_rare_metals},{self.raw_oil},{self.raw_natural_gas},{self.raw_food},{self.raw_production},{self.intermediary_plastics},{self.intermediary_electronics},{self.intermediary_advanced_parts},{self.finished_consumer_products},{self.finished_military_products},{self.finished_power},{self.tracker_incoming_trade},{self.tracker_total_resource_expenditure},{self.tracker_total_resource_production},{self.tracker_economy_strength},{self.tracker_budget},{self.tracker_population},{self.tracker_urban_population},{self.tracker_political_stability}\n")
         else:
             # If entity already exists, rewrite entire file and make the specifc line it was on changed again
             file = open("saves/economylist.txt","w")
@@ -218,14 +233,14 @@ Power: {self.finished_power}
                 if line_array.index(line) != final_line_number:
                     file.write(line)
                 else:
-                    file.write(f"{parent_nation.get_name()},{self.raw_industrial_metals},{self.raw_rare_metals},{self.raw_oil},{self.raw_natural_gas},{self.raw_food},{self.raw_production},{self.intermediary_plastics},{self.intermediary_electronics},{self.intermediary_advanced_parts},{self.finished_consumer_products},{self.finished_military_products},{self.finished_power},{self.tracker_incoming_trade},{self.tracker_total_resource_expenditure},{self.tracker_total_resource_production},{self.tracker_economy_strength},{self.tracker_budget},{self.tracker_population},{self.tracker_urban_population}\n")
+                    file.write(f"{parent_nation.get_name()},{self.raw_industrial_metals},{self.raw_rare_metals},{self.raw_oil},{self.raw_natural_gas},{self.raw_food},{self.raw_production},{self.intermediary_plastics},{self.intermediary_electronics},{self.intermediary_advanced_parts},{self.finished_consumer_products},{self.finished_military_products},{self.finished_power},{self.tracker_incoming_trade},{self.tracker_total_resource_expenditure},{self.tracker_total_resource_production},{self.tracker_economy_strength},{self.tracker_budget},{self.tracker_population},{self.tracker_urban_population},{self.tracker_political_stability}\n")
             file.close()
 
 
     def tick(self):
         # Called at beginning of every cycle, should be calculated before nation and assets
 
-        self.tracker_budget = (self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * self.tracker_economy_strength * self.tracker_population
+        self.tracker_budget =self.tracker_budget + ((self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * (self.tracker_economy_strength*100000) + (self.tracker_population-self.tracker_urban_population+(self.tracker_urban_population*3)) * (self.tracker_political_stability/50))/6
         
         # Reduce all resources to 0 to recalculate for next tick
 
@@ -247,3 +262,6 @@ Power: {self.finished_power}
         self.tracker_incoming_trade = 0      #To keep track of incoming resource value
         self.tracker_total_resource_production = 0
         self.tracker_total_resource_expenditure = 0     #Includes resources traded out of country
+
+        self.tracker_population = int((self.tracker_population * (1.001))//1)
+        self.tracker_urban_population = int((self.tracker_urban_population*(1+self.tracker_economy_strength//10000))//1)
