@@ -6,7 +6,7 @@ Used to store data about a nation including all assets it has and its stats
 
 class Nation():
 
-    def __init__(self, name: str, stat_wealth: int, stat_force: int, stat_political: int, object_economy: object, object_store: object):
+    def __init__(self, name: str, stat_wealth: int, stat_political: int, stat_force: int, object_economy: object, object_store: object):
 
         self.turns = 0
         self.name = name
@@ -19,6 +19,12 @@ class Nation():
 
     def get_name(self) -> str:
         return(self.name)
+
+    def get_economy(self) -> object:
+        return(self.object_economy)
+
+    def load_asset(self, asset: object):
+        self.list_assets.append(asset)
 
     def menu(self):
 
@@ -89,9 +95,12 @@ class Nation():
         asset_file = open(f"saves/nations/{self.get_name()}", "w")
         for asset in self.list_assets:
             if asset.get_assettype() == "ability":
-                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_duration()}\n")
-            else:
-                asset_file.write(f"{asset.name},{asset.assettype}\n")
+                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_duration()},{asset.get_location().get_name()}\n")
+            elif asset.get_assettype() == "infrastructure":
+                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_location().get_name()},{asset.get_health}\n")
+            elif asset.get_assettype() == "unitgroup":
+                composition = str(asset.get_composition()).replace(",","|") # commas get read as string breakers when loading file so they will be changed so that composition stays as one string
+                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{composition},{asset.get_health()}\n")
         asset_file.close()
 
         # Save Nation details

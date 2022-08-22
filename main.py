@@ -10,10 +10,8 @@ from assetstore import AssetStore
 
 
 list_nation = []
-the_store = AssetStore(list_nation)
+assetStore = AssetStore(list_nation)
 
-France = Nation("French Republic", 4, 3, 5, Economy(67390000000,54000000),the_store)
-list_nation.append(France)
 
 def menu():
     isRunning = True
@@ -61,8 +59,92 @@ def menu():
                 
                     print("Out of index error")
 
-def save():
-    for nation in list_nation():
-        nation.save()
+
+def load():
+    
+    nation_file = open("saves/nationlist.txt")
+    for line in nation_file:
+        # Prepares line into array to be turned into nation.
+        line = line.replace("\n","")
+        line_parsed = line.split(",")
+        economy_file = open("saves/economylist.txt")
         
+        economy_found = False
+        for economy in economy_file:
+            if economy.find(line_parsed[0]) != -1:
+                economy = economy.replace("\n","")
+                economy_parsed = economy.split(",")
+                economy_found = True
+        if economy_found == True:
+            economy_file.close()
+            list_nation.append(Nation(line_parsed[0], line_parsed[1], line_parsed[2], line_parsed[3], Economy(int(economy_parsed[18]),int(economy_parsed[19])),assetStore))
+            list_nation[-1].get_economy().add_raw_industrial_metals(int(economy_parsed[1]))
+            list_nation[-1].get_economy().add_raw_rare_metals(int(economy_parsed[2]))
+            list_nation[-1].get_economy().add_raw_oil(int(economy_parsed[3]))
+            list_nation[-1].get_economy().add_raw_natural_gas(int(economy_parsed[4]))
+            list_nation[-1].get_economy().add_raw_food(int(economy_parsed[5]))
+            list_nation[-1].get_economy().add_raw_production(int(economy_parsed[6]))
+
+            list_nation[-1].get_economy().add_intermediary_plastics(int(economy_parsed[7]))
+            list_nation[-1].get_economy().add_intermediary_electronics(int(economy_parsed[8]))
+            list_nation[-1].get_economy().add_intermediary_advanced_parts(int(economy_parsed[9]))
+
+            list_nation[-1].get_economy().add_finished_consumer_products(int(economy_parsed[10]))
+            list_nation[-1].get_economy().add_finished_military_products(int(economy_parsed[11]))
+            list_nation[-1].get_economy().add_finished_power(int(economy_parsed[12]))
+
+            list_nation[-1].get_economy().add_tracker_incoming_trade(int(economy_parsed[13]))
+            list_nation[-1].get_economy().add_tracker_total_resource_expenditure(int(economy_parsed[14]))
+            list_nation[-1].get_economy().add_tracker_total_resource_production(int(economy_parsed[15]))
+            list_nation[-1].get_economy().set_tracker_economy_strength(int(economy_parsed[16]))
+            list_nation[-1].get_economy().set_tracker_budget(int(economy_parsed[17]))
+
+        else:
+            print(f"No economy found for {line_parsed[0]}, creating default, Manually set population -> ")
+            population = int(input("Enter Population: "))
+            urb_population = int(input("Enter Urban Population: "))
+            list_nation.append(Nation(line_parsed[0], line_parsed[1], line_parsed[2], line_parsed[3], Economy(population,urb_population),assetStore))
+            
+
+    for nation in list_nation:
+        asset_file = open(f"saves/nations/{nation.get_name()}")
+        for line in asset_file:
+            line = line.replace("\n","")
+            line_parsed = line.split(",")
+            asset_file_name = line_parsed[0].lower().replace(" ","_")
+            asset_class_name = line_parsed[0].title().replace(" ","")
+            exec((f"from assets.{line_parsed[1]}folder.{asset_file_name} import {asset_class_name}"))
+            if line_parsed[1] == "ability":
+                for target_nation in list_nation:
+                    if target_nation.get_name() == line_parsed[3]:
+                        nation_selected = target_nation
+                asset = exec(f"{asset_class_name}()")
+                asset.set_location(nation_selected)
+                asset.set_duration(line_parsed[2])
+                nation.load_asset(asset)
+
+            elif line_parsed[1] == "infrastructure":
+                for target_nation in list_nation:
+                    if target_nation.get_name() == line_parsed[2]:
+                        nation_selected = target_nation
+                exec(f'asset = {asset_class_name}("a",2)') #Function unable to properly call the asset
+                asset.set_location(nation_selected)
+                asset.set_health(line_parsed[3])
+                nation.load_asset(asset)
+
+            elif line_parsed[1] == "unitgroup":
+                composition = line_parsed[2]
+                composition = composition.replace("[","").replace("]","").replace("|",",")
+                composition = composition.split("/")
+                composition_list = []
+                for element in composition:
+                    composition_list.append(element)
+                asset = exec(f"{asset_class_name}({line_parsed[3]},{composition_list})")
+        
+
+
+        
+
+
+load()    
 menu()

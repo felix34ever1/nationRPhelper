@@ -76,11 +76,17 @@ class Economy():
     def add_tracker_total_resource_production(self,amount: int):
         self.tracker_total_resource_production += amount
 
-    def add_tracker_total_resource_consumption(self,amount: int):
-        self.add_tracker_total_resource_consumption += amount
+    def add_tracker_total_resource_expenditure(self,amount: int):
+        self.tracker_total_resource_expenditure += amount
 
     def add_tracker_incoming_trade(self,amount: int):
         self.tracker_incoming_trade += amount
+
+    def set_tracker_economy_strength(self, amount: float):
+        self.tracker_economy_strength = amount
+
+    def set_tracker_budget(self, amount: float):
+        self.tracker_budget = amount
 
     def menu(self):
         print('''
