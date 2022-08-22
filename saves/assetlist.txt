@@ -1,2 +1,3 @@
 example_ability,ability
 example_infrastructure,infrastructure
+example_unit_group,unitgroup
