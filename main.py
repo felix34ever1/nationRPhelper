@@ -98,6 +98,7 @@ def load():
             list_nation[-1].get_economy().add_tracker_total_resource_production(int(economy_parsed[15]))
             list_nation[-1].get_economy().set_tracker_economy_strength(int(economy_parsed[16]))
             list_nation[-1].get_economy().set_tracker_budget(int(economy_parsed[17]))
+            list_nation[-1].get_economy().set_tracker_political_stability(int(economy_parsed[20]))
 
         else:
             print(f"No economy found for {line_parsed[0]}, creating default, Manually set population -> ")
