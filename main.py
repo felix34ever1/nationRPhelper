@@ -108,37 +108,41 @@ def load():
             
 
     for nation in list_nation:
-        asset_file = open(f"saves/nations/{nation.get_name()}")
-        for line in asset_file:
-            line = line.replace("\n","")
-            line_parsed = line.split(",")
-            asset_file_name = line_parsed[0].lower().replace(" ","_")
-            asset_class_name = line_parsed[0].title().replace(" ","")
-            exec(f"from assets.{line_parsed[1]}folder.{asset_file_name} import {asset_class_name}")
-            if line_parsed[1] == "ability":
-                for target_nation in list_nation:
-                    if target_nation.get_name() == line_parsed[3]:
-                        nation_selected = target_nation
-                exec(f"asset_object = {asset_class_name}(nation_selected,line_parsed[2])")
-                exec("nation.load_asset(asset_object)")
+        try:
+            asset_file = open(f"saves/nations/{nation.get_name()}","r")
+        except:
+            open(f"saves/nations/{nation.get_name()}","x")
+        else:
+            for line in asset_file:
+                line = line.replace("\n","")
+                line_parsed = line.split(",")
+                asset_file_name = line_parsed[0].lower().replace(" ","_")
+                asset_class_name = line_parsed[0].title().replace(" ","")
+                exec(f"from assets.{line_parsed[1]}folder.{asset_file_name} import {asset_class_name}")
+                if line_parsed[1] == "ability":
+                    for target_nation in list_nation:
+                        if target_nation.get_name() == line_parsed[3]:
+                            nation_selected = target_nation
+                    exec(f"asset_object = {asset_class_name}(nation_selected,line_parsed[2])")
+                    exec("nation.load_asset(asset_object)")
 
-            elif line_parsed[1] == "infrastructure":
-                for target_nation in list_nation:
-                    if target_nation.get_name() == line_parsed[2]:
-                        nation_selected = target_nation
-                exec(f'asset_object = {asset_class_name}(nation_selected,int(line_parsed[3]))')
-                exec("nation.load_asset(asset_object)")
+                elif line_parsed[1] == "infrastructure":
+                    for target_nation in list_nation:
+                        if target_nation.get_name() == line_parsed[2]:
+                            nation_selected = target_nation
+                    exec(f'asset_object = {asset_class_name}(nation_selected,int(line_parsed[3]))')
+                    exec("nation.load_asset(asset_object)")
 
-            elif line_parsed[1] == "unitgroup":
-                composition = line_parsed[2]
-                composition = composition.replace("[","").replace("]","").replace("|",",")
-                composition = composition.split(",")
-                composition_list = []
-                for element in composition:
-                    if element != '':
-                        composition_list.append(element)
-                exec(f"asset_object = {asset_class_name}({line_parsed[3]},{composition_list})")
-                exec("nation.load_asset(asset_object)")
+                elif line_parsed[1] == "unitgroup":
+                    composition = line_parsed[2]
+                    composition = composition.replace("[","").replace("]","").replace("|",",")
+                    composition = composition.split(",")
+                    composition_list = []
+                    for element in composition:
+                        if element != '':
+                            composition_list.append(element)
+                    exec(f"asset_object = {asset_class_name}({line_parsed[3]},{composition_list})")
+                    exec("nation.load_asset(asset_object)")
 
 
         
