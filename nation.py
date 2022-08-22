@@ -6,9 +6,9 @@ Used to store data about a nation including all assets it has and its stats
 
 class Nation():
 
-    def __init__(self, name: str, stat_wealth: int, stat_political: int, stat_force: int, object_economy: object, object_store: object):
+    def __init__(self, name: str, stat_wealth: int, stat_political: int, stat_force: int, object_economy: object, object_store: object, turns: int = 0):
 
-        self.turns = 0
+        self.turns = turns
         self.name = name
         self.stat_wealth = stat_wealth
         self.stat_force = stat_force
@@ -97,7 +97,7 @@ class Nation():
             if asset.get_assettype() == "ability":
                 asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_duration()},{asset.get_location().get_name()}\n")
             elif asset.get_assettype() == "infrastructure":
-                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_location().get_name()},{asset.get_health}\n")
+                asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{asset.get_location().get_name()},{asset.get_health()}\n")
             elif asset.get_assettype() == "unitgroup":
                 composition = str(asset.get_composition()).replace(",","|") # commas get read as string breakers when loading file so they will be changed so that composition stays as one string
                 asset_file.write(f"{asset.get_name()},{asset.get_assettype()},{composition},{asset.get_health()}\n")

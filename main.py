@@ -77,7 +77,7 @@ def load():
                 economy_found = True
         if economy_found == True:
             economy_file.close()
-            list_nation.append(Nation(line_parsed[0], line_parsed[1], line_parsed[2], line_parsed[3], Economy(int(economy_parsed[18]),int(economy_parsed[19])),assetStore))
+            list_nation.append(Nation(line_parsed[0], line_parsed[1], line_parsed[2], line_parsed[3], Economy(int(economy_parsed[18]),int(economy_parsed[19])),assetStore, int(line_parsed[4])))
             list_nation[-1].get_economy().add_raw_industrial_metals(int(economy_parsed[1]))
             list_nation[-1].get_economy().add_raw_rare_metals(int(economy_parsed[2]))
             list_nation[-1].get_economy().add_raw_oil(int(economy_parsed[3]))
@@ -103,7 +103,8 @@ def load():
             print(f"No economy found for {line_parsed[0]}, creating default, Manually set population -> ")
             population = int(input("Enter Population: "))
             urb_population = int(input("Enter Urban Population: "))
-            list_nation.append(Nation(line_parsed[0], line_parsed[1], line_parsed[2], line_parsed[3], Economy(population,urb_population),assetStore))
+            list_nation.append(Nation(line_parsed[0], line_parsed[1], line_parsed[2], line_parsed[3], Economy(population,urb_population),assetStore, int(line_parsed[4])))
+        
             
 
     for nation in list_nation:
@@ -113,34 +114,31 @@ def load():
             line_parsed = line.split(",")
             asset_file_name = line_parsed[0].lower().replace(" ","_")
             asset_class_name = line_parsed[0].title().replace(" ","")
-            exec((f"from assets.{line_parsed[1]}folder.{asset_file_name} import {asset_class_name}"))
+            exec(f"from assets.{line_parsed[1]}folder.{asset_file_name} import {asset_class_name}")
             if line_parsed[1] == "ability":
                 for target_nation in list_nation:
                     if target_nation.get_name() == line_parsed[3]:
                         nation_selected = target_nation
-                asset = exec(f"{asset_class_name}()")
-                asset.set_location(nation_selected)
-                asset.set_duration(line_parsed[2])
-                nation.load_asset(asset)
+                exec(f"asset_object = {asset_class_name}(nation_selected,line_parsed[2])")
+                exec("nation.load_asset(asset_object)")
 
             elif line_parsed[1] == "infrastructure":
                 for target_nation in list_nation:
                     if target_nation.get_name() == line_parsed[2]:
                         nation_selected = target_nation
-                exec(f'asset = {asset_class_name}("a",2)') #Function unable to properly call the asset
-                asset.set_location(nation_selected)
-                asset.set_health(line_parsed[3])
-                nation.load_asset(asset)
+                exec(f'asset_object = {asset_class_name}(nation_selected,int(line_parsed[3]))')
+                exec("nation.load_asset(asset_object)")
 
             elif line_parsed[1] == "unitgroup":
                 composition = line_parsed[2]
                 composition = composition.replace("[","").replace("]","").replace("|",",")
-                composition = composition.split("/")
+                composition = composition.split(",")
                 composition_list = []
                 for element in composition:
-                    composition_list.append(element)
-                asset = exec(f"{asset_class_name}({line_parsed[3]},{composition_list})")
-        
+                    if element != '':
+                        composition_list.append(element)
+                exec(f"asset_object = {asset_class_name}({line_parsed[3]},{composition_list})")
+                exec("nation.load_asset(asset_object)")
 
 
         

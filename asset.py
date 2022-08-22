@@ -29,6 +29,9 @@ class Asset():
     def tick(self):
         pass
 
+    def menu(self):
+        pass
+
     def save(self, parent_nation: object):
         pass
     #     file = open(f"saves/nation/{parent_nation.get_name()}.txt")
