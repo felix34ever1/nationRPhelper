@@ -26,7 +26,7 @@ class Asset():
     def get_description(self) -> str:
         return(self.description)
 
-    def tick(self):
+    def tick(self, phase = 1):
         pass
 
     def menu(self):

@@ -134,8 +134,9 @@ class Nation():
         # The tick is called upon a nation twice, once to process phase one and then again for phase 2.
         #  Phase 1: Processes economy update
         #  Phase 2: Processes assets + nation assets
-
+        
         if phase == 1:
+            print(f"[Processing: {self.name}]")
             self.object_economy.tick()
 
 

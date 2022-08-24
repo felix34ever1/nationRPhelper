@@ -2,6 +2,7 @@
 
 Acts as the tracker for everything to do with numbers in a nation.
 """
+import math
 
 
 class Economy():
@@ -240,16 +241,46 @@ Budget: {self.tracker_budget}
     def tick(self):
         # Called at beginning of every cycle, should be calculated before nation and assets
 
-        self.tracker_budget =self.tracker_budget + ((self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * (self.tracker_economy_strength*100000) + (self.tracker_population-self.tracker_urban_population+(self.tracker_urban_population*3)) * (self.tracker_political_stability/50))/6
+        # Food consumption
+        self.raw_food = self.raw_food - self.tracker_population//10000000
+        if self.raw_food < 0:
+            print(f"Food shortage: {self.raw_food}")
+            self.tracker_political_stability += self.raw_food
+            self.raw_food = 0
+        
+        # Consumer good consumption
+        self.finished_consumer_products += int(self.raw_food//4)
+        self.finished_consumer_products -= self.tracker_population//20000000
+        if self.finished_consumer_products < 0:
+            print(f"Consumer demand unmet: {self.finished_consumer_products}")
+            self.tracker_economy_strength += self.finished_consumer_products
+
+        # Power consumption
+        power_need = int(self.tracker_population//10000000)
+        power_need -= self.finished_power
+        if power_need > 0:
+            if self.raw_oil > 0:
+                power_need -= (self.raw_oil*3)
+                if self.raw_natural_gas > 0:
+                    power_need -= (self.raw_natural_gas*4)
+        if power_need > 0:
+            print(f"Power demand unmet: {power_need}")
+            self.tracker_economy_strength -= int(power_need/2)
+            self.tracker_political_stability -= int(power_need/2)
+
+        
+
+        self.tracker_budget =int(self.tracker_budget + ((self.tracker_total_resource_expenditure+self.tracker_total_resource_production-self.tracker_incoming_trade) * (self.tracker_economy_strength*100000) + (self.tracker_population-self.tracker_urban_population+(self.tracker_urban_population*3)) * (self.tracker_political_stability/50))/6)
         
         # Reduce all resources to 0 to recalculate for next tick
+
+        self.tracker_political_stability = int(self.tracker_political_stability)
+        self.tracker_economy_strength = int(self.tracker_economy_strength)
 
         self.raw_industrial_metals = 0
         self.raw_rare_metals = 0
         self.raw_oil = 0
         self.raw_natural_gas = 0
-        self.raw_food = 0
-        self.raw_production = 0
 
         self.intermediary_plastics = 0
         self.intermediary_electronics = 0
@@ -262,6 +293,9 @@ Budget: {self.tracker_budget}
         self.tracker_incoming_trade = 0      #To keep track of incoming resource value
         self.tracker_total_resource_production = 0
         self.tracker_total_resource_expenditure = 0     #Includes resources traded out of country
+
+        self.raw_food = ((self.tracker_population-self.tracker_urban_population)//1000000)
+        self.raw_production = (2+(self.tracker_urban_population//10000000))
 
         self.tracker_population = int((self.tracker_population * (1.001))//1)
         self.tracker_urban_population = int((self.tracker_urban_population*(1+self.tracker_economy_strength//10000))//1)

@@ -21,5 +21,6 @@ class Ability(Asset):
     def get_duration(self) -> int:
         return(self.duration)
 
-    def tick(self):
-        self.duration -= 1
+    def tick(self, phase = 1):
+        if phase == 3:
+            self.duration -= 1
